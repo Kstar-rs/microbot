@@ -22,7 +22,7 @@ class ProgressiveGlassblowingModel {
 
 public class GlassblowingScript extends Script {
 
-    public static double version = 2.0;
+    public static double version = 3.0;
     ProgressiveGlassblowingModel model = new ProgressiveGlassblowingModel();
 
     String moltenGlass = "molten glass";
@@ -63,7 +63,7 @@ public class GlassblowingScript extends Script {
 
     private void bank(CraftingConfig config) {
         Rs2Bank.openBank();
-        sleepUntilOnClientThread(() -> Rs2Bank.isOpen());
+        sleepUntilOnClientThread(Rs2Bank::isOpen);
 
         Rs2Bank.depositAll(itemToCraft.getItemName());
         sleepUntilOnClientThread(() -> !Inventory.hasItem(itemToCraft.getItemName()));

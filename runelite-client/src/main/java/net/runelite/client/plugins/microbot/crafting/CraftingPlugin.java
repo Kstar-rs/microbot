@@ -10,11 +10,10 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.microbot.Microbot;
-import net.runelite.client.plugins.microbot.crafting.enums.Activities;
-import net.runelite.client.plugins.microbot.crafting.enums.Gems;
-import net.runelite.client.plugins.microbot.crafting.scripts.DefaultScript;
-import net.runelite.client.plugins.microbot.crafting.scripts.GemsScript;
-import net.runelite.client.plugins.microbot.crafting.scripts.GlassblowingScript;
+import net.runelite.client.plugins.microbot.crafting.enums.*;
+import net.runelite.client.plugins.microbot.crafting.enums.armour.Armour;
+import net.runelite.client.plugins.microbot.crafting.enums.jewellery.Jewellery;
+import net.runelite.client.plugins.microbot.crafting.scripts.*;
 import net.runelite.client.plugins.microbot.util.mouse.VirtualMouse;
 import net.runelite.client.ui.overlay.OverlayManager;
 
@@ -53,8 +52,13 @@ public class CraftingPlugin extends Plugin {
     private CraftingOverlay craftingOverlay;
 
     private DefaultScript defaultScript = new DefaultScript();
+    private AmethystScript amethystScript = new AmethystScript();
+    private ArmourScript armourScript = new ArmourScript();
+    private BattlestavesScript battlestavesScript = new BattlestavesScript();
     private GemsScript gemsScript = new GemsScript();
     private GlassblowingScript glassblowingScript = new GlassblowingScript();
+    private JewelleryScript jewelleryScript = new JewelleryScript();
+    private SpinningScript spinningScript = new SpinningScript();
 
     @Override
     protected void startUp() throws AWTException {
@@ -70,19 +74,81 @@ public class CraftingPlugin extends Plugin {
             overlayManager.add(craftingOverlay);
         }
 
-        if (config.activityType() == Activities.DEFAULT) {
-            defaultScript.run(config);
-        } else if (config.activityType() == Activities.GEM_CUTTING) {
-            gemsScript.run(config);
-        } else if (config.activityType() == Activities.GLASSBLOWING) {
-            glassblowingScript.run(config);
+        if(config.activityType() == Activities.NONE) shutDown("no activity selected");
+
+        if(config.activityType() == Activities.AMETHYST) {
+            if(config.amethystType() != Amethyst.NONE) {
+                amethystScript.run(config);
+            } else {
+                shutDown("config not set for activity");
+            }
         }
+
+        if(config.activityType() == Activities.ARMOUR) {
+            if(config.armourType() != Armour.NONE) {
+                armourScript.run(config);
+            } else {
+                shutDown("config not set for activity");
+            }
+        }
+
+        if(config.activityType() == Activities.BATTLESTAVES) {
+            if(config.battlestaffType() != Battlestaves.NONE) {
+                battlestavesScript.run(config);
+            } else {
+                shutDown("config not set for activity");
+            }
+        }
+
+        if(config.activityType() == Activities.GEM_CUTTING) {
+            if(config.gemType() != Gems.NONE) {
+                gemsScript.run(config);
+            } else {
+                shutDown("config not set for activity");
+            }
+        }
+
+        if(config.activityType() == Activities.GLASSBLOWING) {
+            if(config.glassType() != Glass.NONE) {
+                glassblowingScript.run(config);
+            } else {
+                shutDown("config not set for activity");
+            }
+        }
+
+        if(config.activityType() == Activities.JEWELLERY) {
+            if(config.jewelleryType() != Jewellery.NONE) {
+                jewelleryScript.run(config);
+            } else {
+                shutDown("config not set for activity");
+            }
+        }
+
+        if(config.activityType() == Activities.SPINNING) {
+            if(config.spinningType() != Spinning.NONE && config.spinningWheelLocation() != SpinningWheels.NONE) {
+                spinningScript.run(config);
+            } else {
+                shutDown("config not set for activity");
+            }
+        }
+
     }
 
     protected void shutDown() {
+        stopScripts();
+        overlayManager.remove(craftingOverlay);
+    }
+
+    protected void shutDown(String reason) {
+        stopScripts();
+        Microbot.status = "[Shutting down] - Reason: " + reason;
+        Microbot.getNotifier().notify(Microbot.status);
+        overlayManager.remove(craftingOverlay);
+    }
+
+    protected void stopScripts() {
         glassblowingScript.shutdown();
         gemsScript.shutdown();
         defaultScript.shutdown();
-        overlayManager.remove(craftingOverlay);
     }
 }

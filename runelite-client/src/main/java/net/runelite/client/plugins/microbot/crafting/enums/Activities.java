@@ -7,10 +7,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Activities {
     NONE("None"),
-    // TODO: Should refactor the default option, now this runs a leather script
-    DEFAULT("Default script"),
+    AMETHYST("Amethyst"),
+    ARMOUR("Armour"),
+    BATTLESTAVES("Battlestaves"),
     GEM_CUTTING("Cutting gems"),
-    GLASSBLOWING("Glassblowing");
+    GLASSBLOWING("Glassblowing"),
+    JEWELLERY("Jewellery"),
+    SPINNING("Spinning");
 
     private final String name;
 
