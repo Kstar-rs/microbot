@@ -50,7 +50,7 @@ public class BattlestavesScript extends Script {
         Rs2Bank.openBank();
         sleepUntilOnClientThread(Rs2Bank::isOpen);
 
-        Rs2Bank.depositAll(itemToCraft);
+        Rs2Bank.depositXContains(itemToCraft, 14);
         sleepUntilOnClientThread(() -> !Inventory.hasItem(itemToCraft));
 
         verifyItemInBank(battlestaff);
